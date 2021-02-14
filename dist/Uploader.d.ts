@@ -1,0 +1,37 @@
+import { OptionUploader, STATUS_UPLOADER, UploadApi } from './interface';
+import { Emitter } from './Emitter';
+export declare class Uploader<F> extends Emitter {
+    private option;
+    private nodes;
+    private previews;
+    private fileManager;
+    private _files;
+    private _disabled;
+    private _status;
+    private _multiple;
+    private get css();
+    private get api();
+    get files(): Map<string, F>;
+    private addFile;
+    constructor($el: HTMLElement, option?: Partial<OptionUploader>);
+    private render;
+    seleced(files: File[]): Promise<void>;
+    private uploaders;
+    private uplaodItem;
+    private enabledFileManaged;
+    destroy(): void;
+    protected setDisabled(value: boolean): void;
+    get disabled(): boolean;
+    set disabled(value: boolean);
+    set accept(value: string | string[]);
+    get count(): number;
+    set count(value: number);
+    set upload(value: new (...args: any[]) => UploadApi);
+    set fileSize(value: number);
+    get status(): STATUS_UPLOADER;
+    input(): void;
+    get value(): F | F[];
+    get multiple(): boolean;
+    set multiple(value: boolean);
+    clear(): void;
+}
