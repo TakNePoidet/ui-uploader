@@ -1,0 +1,310 @@
+$color-primary: #167af4;
+$color-danger: #ff6a6a;
+$color-success: #41b883;
+$color-warning: #ffc107;
+.uploader {
+	font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+	border-radius: 3px;
+	background-color: #fff;
+	border: 1px solid rgba($color: #222, $alpha: 0.1);
+	padding: 20px;
+	margin: 20px auto;
+	$self: &;
+	max-width: 800px;
+	#{$self}__preview {
+		display: grid;
+		grid-template-columns: repeat(1, 1fr);
+		gap: 15px;
+		// margin: 20px 0;
+		margin-top: 0;
+		&:empty {
+			display: none;
+		}
+	}
+	#{$self}__preview:not(:empty) + #{$self}__file-manager {
+		margin-top: 20px;
+	}
+}
+
+.dropzone {
+	box-sizing: border-box;
+	position: relative;
+	$self: &;
+	#{$self}__wrapper {
+		display: block;
+		#{$self}__control {
+			cursor: pointer;
+			#{$self}__input {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				opacity: 0;
+				cursor: pointer;
+				// display: none;
+			}
+			#{$self}__button {
+				padding: 13px 18px;
+				border-radius: 3px;
+				font-size: 16px;
+				display: block;
+				width: 100%;
+				color: rgba($color: #222, $alpha: 0.6);
+				text-align: center;
+				background-color: rgba($color: $color-primary, $alpha: 0.2);
+				border: 1px solid rgba($color: $color-primary, $alpha: 0.05);
+				box-shadow: 0 2px 2px 0 rgba(18, 30, 57, 0.1);
+			}
+
+			&:hover {
+				#{$self}__button {
+					background-color: rgba($color: $color-primary, $alpha: 0.25);
+					box-shadow: 0 2px 2px 0 rgba(18, 30, 57, 0.2);
+				}
+			}
+		}
+		#{$self}__dragzone {
+			display: none;
+			// margin: 20px 0;
+			height: 150px;
+			background-color: rgba($color: $color-primary, $alpha: 0.03);
+			border: 3px dashed rgba($color: $color-primary, $alpha: 0.1);
+			border-radius: 3px;
+			position: relative;
+			// display: flex;
+			justify-content: center;
+			align-items: center;
+			&::after {
+				content: attr(data-text);
+				font-weight: bold;
+				color: rgba($color: $color-primary, $alpha: 0.5);
+			}
+		}
+	}
+	&#{$self}--hide {
+		display: none;
+	}
+	&#{$self}--active-dragzone {
+		#{$self}__control {
+			display: none;
+			// pointer-events: none;
+			// opacity: 0;
+			// position: absolute;
+			// top: 0;
+			// height: 50px;
+		}
+		#{$self}__dragzone {
+			display: flex;
+			height: 250px;
+			// position: absolute;
+			width: 100%;
+			z-index: 5;
+			top: 0;
+		}
+	}
+	&#{$self}--drop-dragzone {
+		#{$self}__dragzone {
+			background-color: rgba($color: $color-primary, $alpha: 0.1);
+			border-color: rgba($color: $color-primary, $alpha: 0.2);
+			border-style: solid;
+		}
+	}
+}
+
+.preview-item {
+	$self: &;
+	width: 100%;
+	border-radius: 3px;
+	background: #f1f1f1;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	opacity: 0;
+	position: relative;
+	transition: opacity 0.2s ease-in-out;
+	&#{$self}--show {
+		opacity: 1;
+	}
+
+	#{$self}__information {
+		display: grid;
+		grid-template-columns: auto 2fr auto auto;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0px;
+		#{$self}__title {
+			font-size: 18px;
+			line-height: 20px;
+			overflow: hidden;
+			padding: 15px 0;
+		}
+		#{$self}__size {
+			font-size: 14px;
+			font-weight: bold;
+			text-align: right;
+		}
+		#{$self}__type {
+			margin-right: 15px;
+			min-width: 70px;
+			padding-left: 6px;
+			span {
+				display: inline-flex;
+				font-size: 12px;
+				text-align: center;
+				padding: 5px 15px;
+				background: rgba($color: $color-primary, $alpha: 1);
+				color: #fff;
+				border-radius: 5px;
+				text-transform: uppercase;
+			}
+		}
+	}
+	#{$self}__actions {
+		// position: absolute;
+		height: 50px;
+		right: 0;
+		top: 0;
+		display: flex;
+		padding: 6px;
+		background: #f1f1f1;
+		// right: -100%;
+		// opacity: 0;
+		transition: all 200ms ease-in;
+		.preview-item-action {
+			border: none;
+			outline: none;
+			display: block;
+			width: 36px;
+			height: 36px;
+			padding: 0;
+			display: none;
+			// background: #f1f1f1;
+			border-radius: 3px;
+			background-color: #fff;
+			cursor: pointer;
+			svg {
+				width: 15px;
+			}
+			&:hover {
+				box-shadow: 0px 0px 1px 1px rgba($color: #222, $alpha: 0.1);
+			}
+		}
+		.preview-item-action-cancel {
+			color: darken($color: $color-warning, $amount: 10);
+		}
+		.preview-item-action-replay {
+			color: $color-success;
+		}
+		.preview-item-action + .preview-item-action {
+			margin-left: 6px;
+		}
+	}
+	// &:hover {
+	// 	#{$self}__actions {
+	// 		right: 0;
+	// 		opacity: 1;
+	// 	}
+	// }
+
+	#{$self}__error {
+		padding: 10px;
+		padding-top: 0;
+		color: $color-danger;
+		font-size: 14px;
+		&:empty {
+			display: none;
+		}
+	}
+	#{$self}__progress {
+		display: none;
+	}
+
+	&#{$self}--queued,
+	&#{$self}--uploading {
+		#{$self}__actions {
+			.preview-item-action-cancel {
+				display: block;
+			}
+		}
+	}
+	&#{$self}--canceled {
+		#{$self}__information {
+			#{$self}__type {
+				span {
+					background: rgba($color: darken($color-warning, 10), $alpha: 1);
+				}
+			}
+		}
+	}
+	&#{$self}--replay {
+		.preview-item-action-replay {
+			display: block;
+		}
+	}
+
+	&#{$self}--queued,
+	&#{$self}--uploading,
+	&#{$self}--success {
+		#{$self}__progress {
+			display: block;
+		}
+	}
+	&#{$self}--uploading {
+		.preview-item-progress {
+		}
+	}
+	&#{$self}--error {
+		#{$self}__information {
+			#{$self}__delete {
+				display: none;
+			}
+		}
+	}
+	&#{$self}--success {
+		#{$self}__information {
+			span {
+				background: rgba($color: $color-success, $alpha: 1);
+			}
+		}
+		#{$self}__delete {
+			display: none;
+		}
+		.preview-item-progress {
+			&__line {
+				width: 100%;
+				background-color: rgba($color: $color-success, $alpha: 1);
+			}
+		}
+	}
+}
+.preview-item-progress {
+	width: 100%;
+	border-radius: 3px;
+	height: 6px;
+	background-color: rgba($color: $color-primary, $alpha: 0.2);
+	$self: &;
+	#{$self}__line {
+		width: 0%;
+		height: 6px;
+		background-color: rgba($color: $color-primary, $alpha: 1);
+		border-radius: 0 3px 3px 0;
+		transition: 0.4s linear;
+		background-size: 60px 60px;
+		transition-property: width, background-color;
+	}
+
+	&#{$self}--processing {
+		#{$self}__line {
+			background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.3) 75%, transparent 75%, transparent);
+			animation: animate-stripes 1s linear infinite;
+		}
+	}
+}
+@keyframes animate-stripes {
+	0% {
+		background-position: 0 0;
+	}
+
+	100% {
+		background-position: 60px 0;
+	}
+}
