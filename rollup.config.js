@@ -15,7 +15,8 @@ export default {
 	output: [
 		{
 			file: pkg.main,
-			format: 'cjs',
+			format: 'umd',
+			name: 'UploaderUi',
 			// exports: 'named',
 			sourcemap: true
 		},
