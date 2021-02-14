@@ -1708,5 +1708,6 @@ var Uploader = /** @class */ (function (_super) {
     return Uploader;
 }(Emitter));
 
-export { DefaultUploadConstructors, Uploader };
+export default Uploader;
+export { DefaultUploadConstructors };
 //# sourceMappingURL=index.es.js.map

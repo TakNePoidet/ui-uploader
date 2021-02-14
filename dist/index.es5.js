@@ -1712,7 +1712,7 @@ var UploaderUi = (function (exports) {
     }(Emitter));
 
     exports.DefaultUploadConstructors = DefaultUploadConstructors;
-    exports.Uploader = Uploader;
+    exports.default = Uploader;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

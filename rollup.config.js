@@ -15,21 +15,20 @@ export default {
 	output: [
 		{
 			file: pkg.main,
-			format: 'umd',
-			name: 'UploaderUi',
-			// exports: 'named',
+			format: 'cjs',
+			exports: 'named',
 			sourcemap: true
 		},
 		{
 			file: pkg.module,
 			format: 'es',
-			// exports: 'named',
+			exports: 'named',
 			sourcemap: true
 		},
 		{
 			file: pkg.browser,
 			format: 'iife',
-			// exports: pkg.name,
+			exports: 'named',
 			name: 'UploaderUi',
 			sourcemap: true
 		}
