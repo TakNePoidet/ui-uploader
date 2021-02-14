@@ -10,48 +10,98 @@ import url from 'rollup-plugin-url';
 
 const pkg = require('./package.json');
 
-export default {
-	input: 'src/index.ts',
-	output: [
-		{
-			file: pkg.main,
-			format: 'cjs',
-			exports: 'named',
-			sourcemap: true
-		},
-		{
-			file: pkg.module,
-			format: 'es',
-			exports: 'named',
-			sourcemap: true
-		},
-		{
-			file: pkg.browser,
-			format: 'iife',
-			exports: 'named',
-			name: 'UploaderUi',
-			sourcemap: true
-		}
-	],
-	plugins: [
-		inlineSvg(),
-		scss(),
-		external(),
-		postcss({
-			modules: false,
-			extract: true,
-			minimize: true,
-			sourceMap: true
-		}),
-		url({
-			exclude: [/\.(inline.svg)/]
-		}),
-		resolve(),
-		typescript({
-			rollupCommonJSResolveHack: true
-			// clean: true,
-		}),
-		commonjs(),
-		sourceMaps()
-	]
-};
+// export default {
+// 	input: './src/index.ts',
+// 	output: [
+// 		{
+// 			file: pkg.main,
+// 			exports: 'named',
+// 			format: 'cjs',
+// 			sourcemap: true
+// 		},
+// 		{
+// 			file: pkg.module,
+// 			format: 'es',
+// 			sourcemap: true
+// 		}
+// 		// {
+// 		// 	file: pkg.browser,
+// 		// 	format: 'iife',
+// 		// 	exports: 'auto',
+// 		// 	name: 'UploaderUi',
+// 		// 	sourcemap: true
+// 		// }
+// 	],
+// 	plugins: [
+// 		commonjs({
+// 			include: 'node_modules/**'
+// 			// exclude: ['node_modules/**']
+// 			// requireReturnsDefault: true
+// 		}),
+// 		inlineSvg(),
+// 		scss(),
+// 		external(),
+// 		postcss({
+// 			modules: false,
+// 			extract: false,
+// 			minimize: true,
+// 			sourceMap: true
+// 		}),
+// 		url({
+// 			exclude: [/\.(inline.svg)/]
+// 		}),
+// 		resolve(),
+// 		typescript({
+// 			rollupCommonJSResolveHack: true,
+// 			clean: true
+// 		}),
+
+// 		sourceMaps()
+// 	]
+// };
+export default [
+	{
+		input: './src/index.ts',
+		output: [
+			{
+				file: pkg.main,
+				exports: 'named',
+				format: 'cjs',
+				sourcemap: true
+			},
+			{
+				file: pkg.module,
+				format: 'es',
+				sourcemap: true
+			}
+			// {
+			// 	file: pkg.browser,
+			// 	format: 'iife',
+			// 	exports: 'named',
+			// 	name: 'UploaderUi',
+			// 	sourcemap: true
+			// }
+		],
+		plugins: [
+			commonjs({}),
+			inlineSvg(),
+			external(),
+			postcss({
+				modules: false,
+				extract: false,
+				minimize: true,
+				sourceMap: true
+			}),
+			url({
+				exclude: [/\.(inline.svg)/]
+			}),
+			resolve(),
+			typescript({
+				rollupCommonJSResolveHack: true,
+				clean: true
+			}),
+
+			sourceMaps()
+		]
+	}
+];

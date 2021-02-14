@@ -1,11 +1,9 @@
 {
-  "name": "ui-uploader",
-  "version": "1.0.2",
+  "name": "banan-ui-uploader",
+  "version": "1.0.4",
   "description": "Интерфес для загрузки файлов с кастомной реализацией загрузки на сервер",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
-  "jsnext:main": "dist/index.es.js",
-  "browser": "dist/index.es5.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "start": "rollup -c -w",
