@@ -2,63 +2,40 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import sourceMaps from 'rollup-plugin-sourcemaps';
 import typescript from 'rollup-plugin-typescript2';
-import scss from 'rollup-plugin-scss';
 import inlineSvg from 'rollup-plugin-inline-svg';
 import external from 'rollup-plugin-peer-deps-external';
 import postcss from 'rollup-plugin-postcss';
 import url from 'rollup-plugin-url';
+import { terser } from 'rollup-plugin-terser';
 
 const pkg = require('./package.json');
 
-// export default {
-// 	input: './src/index.ts',
-// 	output: [
-// 		{
-// 			file: pkg.main,
-// 			exports: 'named',
-// 			format: 'cjs',
-// 			sourcemap: true
-// 		},
-// 		{
-// 			file: pkg.module,
-// 			format: 'es',
-// 			sourcemap: true
-// 		}
-// 		// {
-// 		// 	file: pkg.browser,
-// 		// 	format: 'iife',
-// 		// 	exports: 'auto',
-// 		// 	name: 'UploaderUi',
-// 		// 	sourcemap: true
-// 		// }
-// 	],
-// 	plugins: [
-// 		commonjs({
-// 			include: 'node_modules/**'
-// 			// exclude: ['node_modules/**']
-// 			// requireReturnsDefault: true
-// 		}),
-// 		inlineSvg(),
-// 		scss(),
-// 		external(),
-// 		postcss({
-// 			modules: false,
-// 			extract: false,
-// 			minimize: true,
-// 			sourceMap: true
-// 		}),
-// 		url({
-// 			exclude: [/\.(inline.svg)/]
-// 		}),
-// 		resolve(),
-// 		typescript({
-// 			rollupCommonJSResolveHack: true,
-// 			clean: true
-// 		}),
+const isDev = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 
-// 		sourceMaps()
-// 	]
-// };
+console.log(isDev);
+
+const plagins = [];
+
+if (!isDev) {
+	plagins.push(
+		terser({
+			compress: {
+				// unsafe: true,
+				inline: true,
+				passes: 1,
+				keep_fargs: false,
+				drop_console: true
+			},
+			output: {
+				beautify: false,
+				comments: false
+			},
+			mangle: true
+		})
+	);
+} else {
+	plagins.push(sourceMaps());
+}
 export default [
 	{
 		input: './src/index.ts',
@@ -67,12 +44,12 @@ export default [
 				file: pkg.main,
 				exports: 'named',
 				format: 'cjs',
-				sourcemap: true
+				sourcemap: isDev
 			},
 			{
 				file: pkg.module,
 				format: 'es',
-				sourcemap: true
+				sourcemap: isDev
 			}
 			// {
 			// 	file: pkg.browser,
@@ -83,14 +60,15 @@ export default [
 			// }
 		],
 		plugins: [
+			...plagins,
 			commonjs({}),
 			inlineSvg(),
 			external(),
 			postcss({
 				modules: false,
 				extract: false,
-				minimize: true,
-				sourceMap: true
+				minimize: !isDev,
+				sourceMap: false
 			}),
 			url({
 				exclude: [/\.(inline.svg)/]
@@ -98,10 +76,11 @@ export default [
 			resolve(),
 			typescript({
 				rollupCommonJSResolveHack: true,
-				clean: true
-			}),
-
-			sourceMaps()
+				clean: true,
+				sourceMap: false,
+				useTsconfigDeclarationDir: true,
+				emitDeclarationOnly: false
+			})
 		]
 	}
 ];

@@ -18,7 +18,7 @@ const defaultOption: OptionUploader = deepmerge(defaultOptionDropzone, {
 	upload: DefaultUploadConstructors
 });
 
-export class Uploader<F> extends Emitter {
+export default class Uploader<F> extends Emitter {
 	private option: OptionUploader;
 
 	private nodes: Record<string, HTMLElement> = {};
@@ -63,11 +63,9 @@ export class Uploader<F> extends Emitter {
 		return this._files;
 	}
 
-	private addFile(id: string, value: F) {
-		if (this.option.count === 1) {
-			this.files.clear();
-		}
-		this.files.set(id, value);
+	set files(value) {
+		console.log(value);
+		this._files = value;
 	}
 
 	constructor($el: HTMLElement, option: Partial<OptionUploader> = {}) {
@@ -156,7 +154,7 @@ export class Uploader<F> extends Emitter {
 				this.createEvent(EventUploaderType.ERROR, { error: new Error(response.error.message), preview });
 			}
 			if (response.status === StatusUploadApi.SUCCESS) {
-				this.addFile(preview.id, response.result);
+				this.files.set(preview.id, response.result);
 				preview.status = FILE_STATUS.SUCCESS;
 				this.createEvent(EventUploaderType.LOADED, {
 					file: response.result as F
