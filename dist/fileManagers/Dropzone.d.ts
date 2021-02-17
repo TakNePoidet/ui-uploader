@@ -13,7 +13,8 @@ interface OptionDropzoneFileManager extends OptionDefaultFileManager {
     accept: FileAccept;
     count: FileCount;
     string: {
-        buttonUplaod: string;
+        emptyUplaod: string;
+        filledUplaod: string;
         dropzoneDrag: string;
         dropzoneDrop: string;
     };
@@ -23,7 +24,8 @@ export declare class Dropzone extends FileManagerBase {
         accept: string;
         count: number;
         string: {
-            buttonUplaod: string;
+            emptyUplaod: string;
+            filledUplaod: string;
             dropzoneDrag: string;
             dropzoneDrop: string;
         };

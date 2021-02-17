@@ -2,7 +2,8 @@ import { UploaderPrivateApi } from '../interface';
 import { FileManagerBase, OptionDefaultFileManager } from './FileManagerBase';
 interface OptionStandartFileManager extends OptionDefaultFileManager {
     string: {
-        buttonUplaod: 'Загрузить файл';
+        emptyUplaod: string;
+        filledUplaod: string;
     };
 }
 export declare class StandartFileManager extends FileManagerBase {

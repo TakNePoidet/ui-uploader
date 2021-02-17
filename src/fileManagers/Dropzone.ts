@@ -1,5 +1,5 @@
 import deepmerge from 'deepmerge';
-import { UploaderPrivateApi, FileAccept, FileCount } from '../interface';
+import { UploaderPrivateApi, FileAccept, FileCount, EventUploaderType } from '../interface';
 
 import { append, bind, destroyHtml, make, reactive } from '../utils/util';
 import { getFilesAsync } from '../previews/dataTransfer';
@@ -19,8 +19,8 @@ interface OptionDropzoneFileManager extends OptionDefaultFileManager {
 	accept: FileAccept;
 	count: FileCount;
 	string: {
-		buttonUplaod: string;
-		// dropzoneDefault: string;
+		emptyUplaod: string;
+		filledUplaod: string;
 		dropzoneDrag: string,
 		dropzoneDrop: string,
 	};
@@ -30,7 +30,8 @@ export class Dropzone extends FileManagerBase {
 		accept: '*',
 		count: 1,
 		string: {
-			buttonUplaod: 'Загрузить файл',
+			emptyUplaod: 'Загрузить файл',
+			filledUplaod: 'Загрузить другой файл',
 			dropzoneDrag: 'Перетащите файл сюда или загрузите вручную',
 			dropzoneDrop: 'Отпустите кнопку мыши, чтобы прикрепить файл/лы'
 		}
@@ -66,7 +67,7 @@ export class Dropzone extends FileManagerBase {
 			wrapper: make('div', { className: [this.css.wrapper] }),
 			dragZone: make('div', { className: [this.css.dragZone] }),
 			control: make('div', { className: [this.css.control] }),
-			button: make('button', { className: [this.css.button], type: 'button' }, this.option.string.buttonUplaod),
+			button: make('button', { className: [this.css.button], type: 'button' }, this.option.string.emptyUplaod),
 			input: make('input', {
 				className: [this.css.input],
 				type: 'file',
@@ -96,6 +97,14 @@ export class Dropzone extends FileManagerBase {
 			if (target && target.files) {
 				this.onSeleced(Array.from(target.files));
 			}
+		});
+
+		this.uploaderApi.on(EventUploaderType.UPLOADED, () => {
+			this.nodes.button.innerText = this.option.string.filledUplaod;
+		});
+
+		this.uploaderApi.on(EventUploaderType.CLEAR, () => {
+			this.nodes.button.innerText = this.option.string.emptyUplaod;
 		});
 
 		['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {

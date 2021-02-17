@@ -1,11 +1,13 @@
 import deepmerge from 'deepmerge';
-import { UploaderPrivateApi } from '../interface';
+import { EventUploaderType, UploadApi, UploaderPrivateApi } from '../interface';
+
 import { append, destroyHtml, make } from '../utils/util';
 import { FileManagerBase, OptionDefaultFileManager } from './FileManagerBase';
 
 interface OptionStandartFileManager extends OptionDefaultFileManager {
 	string: {
-		buttonUplaod: 'Загрузить файл',
+		emptyUplaod: string,
+		filledUplaod: string,
 	};
 }
 
@@ -14,7 +16,8 @@ export class StandartFileManager extends FileManagerBase {
 		accept: '*',
 		count: 1,
 		string: {
-			buttonUplaod: 'Загрузить файл'
+			emptyUplaod: 'Загрузить файл',
+			filledUplaod: 'Загрузить другой файл',
 		}
 	};
 
@@ -40,14 +43,11 @@ export class StandartFileManager extends FileManagerBase {
 	constructor($el: HTMLElement, uploaderApi: UploaderPrivateApi, option: Partial<OptionStandartFileManager> = {}) {
 		super(uploaderApi);
 		this.option = deepmerge(StandartFileManager.default, option);
-
-
-		console.log(this.option);
 		this.nodes = {
 			container: $el,
 			wrapper: make('div', { className: [this.css.wrapper] }),
 			control: make('div', { className: [this.css.control] }),
-			button: make('button', { className: [this.css.button], type: 'button' }, this.option.string.buttonUplaod),
+			button: make('button', { className: [this.css.button], type: 'button' }, this.option.string.emptyUplaod),
 			input: make('input', {
 				className: [this.css.input],
 				type: 'file',
@@ -66,6 +66,14 @@ export class StandartFileManager extends FileManagerBase {
 				this.onSeleced(Array.from(target.files));
 			}
 		});
+
+		this.uploaderApi.on(EventUploaderType.UPLOADED, () => {
+			this.nodes.button.innerText = this.option.string.filledUplaod;
+		});
+
+		this.uploaderApi.on(EventUploaderType.CLEAR, () => {
+			this.nodes.button.innerText = this.option.string.emptyUplaod;
+		});
 	}
 
 	protected onSeleced(files: File[]) {
@@ -80,7 +88,6 @@ export class StandartFileManager extends FileManagerBase {
 		append(control, input, button);
 		append(wrapper, control);
 		append(container, wrapper);
-		// this.status = true;
 	}
 
 	public destroy(): void {
