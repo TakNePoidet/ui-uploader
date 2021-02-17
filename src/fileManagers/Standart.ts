@@ -9,14 +9,6 @@ interface OptionStandartFileManager extends OptionDefaultFileManager {
 	};
 }
 
-export const defaultOptionDropzone: OptionStandartFileManager = {
-	accept: '*',
-	count: 1,
-	string: {
-		buttonUplaod: 'Загрузить файл'
-	}
-};
-
 export class StandartFileManager extends FileManagerBase {
 	public static default: {
 		accept: '*',
