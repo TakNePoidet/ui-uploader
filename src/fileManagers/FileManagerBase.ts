@@ -56,6 +56,12 @@ export class FileManagerBase {
 	protected onSeleced(files: File[]) {
 		this.uploaderApi.createEvent(EventUploaderType.SELECTED, { files: Array.from(files) });
 	}
+
+	get api() {
+		return {
+			status(value: 'empty' | 'filled') { }
+		};
+	}
 }
 type FileManagerPrivateApi = FileManagerBase;
 type FileManagerConstructor = new (_uploaderApi: UploaderPrivateApi) => FileManagerPrivateApi;

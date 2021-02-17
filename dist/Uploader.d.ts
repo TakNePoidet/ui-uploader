@@ -1,6 +1,6 @@
 import { OptionUploader, STATUS_UPLOADER, UploadApi } from './interface';
 import { Emitter } from './Emitter';
-export default class Uploader<F, M extends {} = {}> extends Emitter {
+export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
     private option;
     private nodes;
     private previews;
@@ -13,7 +13,7 @@ export default class Uploader<F, M extends {} = {}> extends Emitter {
     private get api();
     get files(): Map<string, F>;
     set files(value: Map<string, F>);
-    constructor($el: HTMLElement, option?: Partial<OptionUploader & M>);
+    constructor($el: HTMLElement, option?: Partial<OptionUploader & M>, state?: F[]);
     private render;
     seleced(files: File[]): Promise<void>;
     private uploaders;

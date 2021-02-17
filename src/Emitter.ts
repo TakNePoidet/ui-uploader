@@ -1,8 +1,8 @@
-import { EmitterCallbackHandler, EmitterCallbacks, EventUploader, EventUploaderHandlerValues, EventUploaderType } from './interface';
+import { EmitterCallbacks, EventUploader, EventUploaderHandlerValues, EventUploaderType } from './interface';
 import { Listeners } from './utils/Listeners';
 import { bind, generateId } from './utils/util';
 
-export class Emitter {
+export class Emitter<F> {
 	protected listeners = new Listeners();
 
 	constructor(private $el: HTMLElement, private id = generateId('uploader')) {
@@ -11,12 +11,12 @@ export class Emitter {
 
 	private callbacks: EmitterCallbacks = [];
 
-	public on<T extends EventUploaderType>(event: T, handler: EmitterCallbackHandler<T>) {
+	public on<T extends EventUploaderType>(event: T, handler: (args: EventUploaderHandlerValues<F>[T]) => void) {
 		this.callbacks.push({ event, handler });
 		return this;
 	}
 
-	public off<T extends EventUploaderType>(event: T, handler: EmitterCallbackHandler<T>) {
+	public off<T extends EventUploaderType>(event: T, handler: (args: EventUploaderHandlerValues<F>[T]) => void) {
 		const index = this.callbacks.findIndex(item => item.event === event && item.handler === handler);
 		this.callbacks.slice(index, 1);
 		return this;

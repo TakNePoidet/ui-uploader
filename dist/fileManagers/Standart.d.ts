@@ -32,6 +32,9 @@ export declare class StandartFileManager extends FileManagerBase {
     set disabled(value: boolean);
     set accept(value: string | string[]);
     set count(value: number);
+    get api(): {
+        status(value: 'empty' | 'filled'): void;
+    };
     input(): void;
 }
 export {};

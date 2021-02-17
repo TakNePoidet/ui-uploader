@@ -51,6 +51,9 @@ export declare class Dropzone extends FileManagerBase {
     private listener;
     protected onSeleced(files: File[]): void;
     private render;
+    get api(): {
+        status(value: 'empty' | 'filled'): void;
+    };
     destroy(): void;
     private addEvent;
     private removeEvent;

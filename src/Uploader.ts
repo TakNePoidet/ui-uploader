@@ -2,7 +2,7 @@ import deepmerge from 'deepmerge';
 import { FileManagerBase, StandartFileManager } from './fileManagers';
 import { EventUploaderType, OptionUploader, STATUS_UPLOADER, UploaderPrivateApi, FILE_STATUS, StatusUploadApi, UploadResult, UploadApi } from './interface';
 import { Previews } from './previews/Previews';
-import { append, checkAccept, destroyHtml, errorTemplate, filesizeformat, make } from './utils/util';
+import { append, checkAccept, destroyHtml, errorTemplate, filesizeformat, generateId, make } from './utils/util';
 import { DefaultUploadConstructors } from './upload-constructors';
 import { Emitter } from './Emitter';
 import { PreviewItem } from './previews';
@@ -19,7 +19,7 @@ const defaultOption: OptionUploader = {
 	FileManager: StandartFileManager
 };
 
-export default class Uploader<F, M extends {} = {}> extends Emitter {
+export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 	private option: OptionUploader;
 
 	private nodes: Record<string, HTMLElement> = {};
@@ -49,10 +49,10 @@ export default class Uploader<F, M extends {} = {}> extends Emitter {
 	private get api(): UploaderPrivateApi {
 		const self = this;
 		return {
-			on: (...args: Parameters<Emitter['on']>) => {
+			on: (...args: Parameters<Emitter<F>['on']>) => {
 				self.on(...args);
 			},
-			off: (...args: Parameters<Emitter['off']>) => {
+			off: (...args: Parameters<Emitter<F>['off']>) => {
 				self.off(...args);
 			},
 			listeners: this.listeners,
@@ -65,11 +65,11 @@ export default class Uploader<F, M extends {} = {}> extends Emitter {
 	}
 
 	set files(value) {
-		console.log(value);
 		this._files = value;
+		this.fileManager.api.status(this._files.size > 0 ? 'filled' : 'empty');
 	}
 
-	constructor($el: HTMLElement, option: Partial<OptionUploader & M> = {}) {
+	constructor($el: HTMLElement, option: Partial<OptionUploader & M> = {}, state: F[] = []) {
 		super($el);
 		this.option = deepmerge(defaultOption, option);
 		this.nodes.container = $el;
@@ -84,6 +84,10 @@ export default class Uploader<F, M extends {} = {}> extends Emitter {
 		this.nodes.wrapper = wrapper;
 		this.nodes.preview = preview;
 		this.nodes.fileManager = fileManager;
+
+		for (const file of state) {
+			this.files.set(generateId('file'), file);
+		}
 
 		this.on(EventUploaderType.SELECTED, ({ files }) => {
 			this.seleced(files);
@@ -159,7 +163,7 @@ export default class Uploader<F, M extends {} = {}> extends Emitter {
 				this.files.set(preview.id, response.result);
 				preview.status = FILE_STATUS.SUCCESS;
 				this.createEvent(EventUploaderType.LOADED, {
-					file: response.result as F
+					file: response.result
 				});
 			}
 			await this.uploaders();

@@ -104,8 +104,8 @@ export interface EventUploader {
 export interface UploaderPrivateApi {
 	createEvent<T extends EventUploaderType>(type: T, values: EventUploaderHandlerValues[T]): void;
 	listeners: Listeners;
-	on: (...args: Parameters<Emitter['on']>) => void;
-	off: (...args: Parameters<Emitter['off']>) => void;
+	on: (...args: Parameters<Emitter<any>['on']>) => void;
+	off: (...args: Parameters<Emitter<any>['off']>) => void;
 }
 
 

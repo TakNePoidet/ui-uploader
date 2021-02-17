@@ -148,6 +148,24 @@ export class Dropzone extends FileManagerBase {
 		// this.status = true;
 	}
 
+	get api() {
+		const self = this;
+		return {
+			status(value: 'empty' | 'filled') {
+				switch (value) {
+					case 'empty':
+						self.nodes.button.innerText = self.option.string.emptyUplaod;
+						break;
+					case 'filled':
+						self.nodes.button.innerText = self.option.string.filledUplaod;
+						break;
+					default:
+						break;
+				}
+			},
+		};
+	}
+
 	public destroy(): void {
 		for (const id of this.listeners) {
 			this.uploaderApi.listeners.offById(id);

@@ -128,6 +128,26 @@ export class StandartFileManager extends FileManagerBase {
 		input.multiple = this.option.count > 1;
 	}
 
+
+
+	get api() {
+		const self = this;
+		return {
+			status(value: 'empty' | 'filled') {
+				switch (value) {
+					case 'empty':
+						self.nodes.button.innerText = self.option.string.emptyUplaod;
+						break;
+					case 'filled':
+						self.nodes.button.innerText = self.option.string.filledUplaod;
+						break;
+					default:
+						break;
+				}
+			},
+		};
+	}
+
 	public input() {
 		if (this.disabled !== true) {
 			this.nodes.input.click();
