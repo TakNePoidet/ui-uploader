@@ -10,12 +10,12 @@ interface OptionStandartFileManager extends OptionDefaultFileManager {
 }
 
 export class StandartFileManager extends FileManagerBase {
-	public static default: {
+	public static default: OptionStandartFileManager = {
 		accept: '*',
 		count: 1,
 		string: {
-			buttonUplaod: 'Загрузить файл';
-		};
+			buttonUplaod: 'Загрузить файл'
+		}
 	};
 
 	protected nodes: Record<string, HTMLElement>;
@@ -40,6 +40,9 @@ export class StandartFileManager extends FileManagerBase {
 	constructor($el: HTMLElement, uploaderApi: UploaderPrivateApi, option: Partial<OptionStandartFileManager> = {}) {
 		super(uploaderApi);
 		this.option = deepmerge(StandartFileManager.default, option);
+
+
+		console.log(this.option);
 		this.nodes = {
 			container: $el,
 			wrapper: make('div', { className: [this.css.wrapper] }),

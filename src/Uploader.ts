@@ -111,8 +111,6 @@ export default class Uploader<F, M extends {} = {}> extends Emitter {
 		if (this.status === STATUS_UPLOADER.WAITING) {
 			await this.previews.clear();
 			this.files.clear();
-
-			console.log(this.option.count);
 			if (this._multiple) {
 				files = files.slice(0, this.option.count);
 			} else {
@@ -128,7 +126,6 @@ export default class Uploader<F, M extends {} = {}> extends Emitter {
 		this.fileManager.disabled = true;
 		const file = files.shift() as File;
 
-		console.log(file, files);
 		const preview = this.previews.newPreview(file);
 		if (!checkAccept(preview.file.type, this.option.accept)) {
 			preview.error = errorTemplate(this.option.errors.accept, {

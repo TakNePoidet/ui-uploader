@@ -104,7 +104,6 @@ export class PreviewItem {
 			actions: make('div', { className: this.css.actions }),
 			actionCancel: make('button', { className: this.css.actionCancel }),
 			actionReplay: make('button', { className: this.css.actionReplay }),
-
 			error: make('div', { className: this.css.error })
 		};
 	}
@@ -139,7 +138,6 @@ export class PreviewItem {
 		this.nodes.type = make('div', { className: this.css.type }, make('span', null, type ? type.toString() : 'unknown'));
 		this.nodes.title = make('div', { className: this.css.title }, name);
 		this.nodes.size = make('div', { className: this.css.size }, filesizeformat(size).join(' '));
-		// this.nodes.a = make('div', { className: this.css.size }, filesizeformat(size).join(' '));
 
 
 		const { actions, actionCancel, actionReplay } = this.nodes;

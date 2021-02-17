@@ -19,7 +19,7 @@ export class Previews {
 	public render(preview: PreviewItem) {
 		append(this.$container, preview.render());
 		setTimeout(() => preview.show(), 0);
-		if (FILE_STATUS.ADDED === preview.status) {
+		if (FILE_STATUS.ADDED === preview.status!) {
 			preview.status = FILE_STATUS.QUEUED;
 		}
 	}
