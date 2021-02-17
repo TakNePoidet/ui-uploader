@@ -1,4 +1,5 @@
 import { Emitter } from './Emitter';
+import { FileManagerBase } from './fileManagers';
 import { PreviewItem } from './previews';
 import { Listeners } from './utils/Listeners';
 export declare enum StatusUploadApi {
@@ -18,6 +19,9 @@ export interface UploadResultCancel {
     status: StatusUploadApi.CANCEL;
 }
 export declare type UploadResult = UploadResultSuccess | UploadResultError | UploadResultCancel;
+export declare type FileManagerBaseConstructors = {
+    new (...args: any[]): FileManagerBase;
+};
 export declare enum STATUS_UPLOADER {
     NOT_READY = "notReady",
     WAITING = "waiting",
@@ -96,26 +100,20 @@ export interface UploaderPrivateApi {
     on: (...args: Parameters<Emitter['on']>) => void;
     off: (...args: Parameters<Emitter['off']>) => void;
 }
-export interface OptionDropzone {
-    accept: FileAccept;
-    count: FileCount;
-    string: {
-        buttonUplaod: string;
-        dropzoneDrag: string;
-        dropzoneDrop: string;
-    };
-}
 export interface UploadApi {
     send(): Promise<any>;
     destroy(): void;
 }
-export interface OptionUploader extends OptionDropzone {
+export interface OptionUploader {
+    accept: FileAccept;
+    count: FileCount;
     fileSize: number;
     errors: {
         accept: string;
         fileSize: string;
     };
-    upload: new (...args: any[]) => UploadApi;
+    FileManager: FileManagerBaseConstructors;
+    Upload: new (...args: any[]) => UploadApi;
 }
 export interface PreviewApiFromUplaod {
     updatePercent(percent: number): void;

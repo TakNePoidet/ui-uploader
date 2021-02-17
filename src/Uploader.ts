@@ -1,24 +1,25 @@
 import deepmerge from 'deepmerge';
-import { Dropzone, defaultOptionDropzone, FileManagerBase } from './fileManagers';
+import { FileManagerBase, StandartFileManager } from './fileManagers';
 import { EventUploaderType, OptionUploader, STATUS_UPLOADER, UploaderPrivateApi, FILE_STATUS, StatusUploadApi, UploadResult, UploadApi } from './interface';
 import { Previews } from './previews/Previews';
-import { append, checkAccept, destroyHtml, errorTemplate, extract, filesizeformat, make } from './utils/util';
+import { append, checkAccept, destroyHtml, errorTemplate, filesizeformat, make } from './utils/util';
 import { DefaultUploadConstructors } from './upload-constructors';
 import { Emitter } from './Emitter';
 import { PreviewItem } from './previews';
 
-
-
-const defaultOption: OptionUploader = deepmerge(defaultOptionDropzone, {
+const defaultOption: OptionUploader = {
+	accept: '*',
+	count: 1,
 	fileSize: 1048576 * 15,
 	errors: {
 		accept: 'Должно быть файлом одного из следующих типов: :values.',
 		fileSize: 'Размер файла не может быть больше :max.'
 	},
-	upload: DefaultUploadConstructors
-});
+	Upload: DefaultUploadConstructors,
+	FileManager: StandartFileManager
+};
 
-export default class Uploader<F> extends Emitter {
+export default class Uploader<F, M extends {} = {}> extends Emitter {
 	private option: OptionUploader;
 
 	private nodes: Record<string, HTMLElement> = {};
@@ -68,7 +69,7 @@ export default class Uploader<F> extends Emitter {
 		this._files = value;
 	}
 
-	constructor($el: HTMLElement, option: Partial<OptionUploader> = {}) {
+	constructor($el: HTMLElement, option: Partial<OptionUploader & M> = {}) {
 		super($el);
 		this.option = deepmerge(defaultOption, option);
 		this.nodes.container = $el;
@@ -79,7 +80,7 @@ export default class Uploader<F> extends Emitter {
 
 		this._multiple = this.option.count > 1;
 		this.previews = new Previews(preview, api);
-		this.fileManager = new Dropzone(fileManager, api, extract(['accept', 'string', 'count'], this.option));
+		this.fileManager = new this.option.FileManager(fileManager, api, this.option);
 		this.nodes.wrapper = wrapper;
 		this.nodes.preview = preview;
 		this.nodes.fileManager = fileManager;
@@ -170,7 +171,7 @@ export default class Uploader<F> extends Emitter {
 
 	private uplaodItem(preview: PreviewItem): Promise<UploadResult> {
 		return new Promise(async (resolve) => {
-			const UploadConstructor = this.option.upload;
+			const UploadConstructor = this.option.Upload;
 			const uplaodApi = new UploadConstructor(preview.file, {
 				updatePercent: (percent: number) => {
 					preview.progress = percent;
@@ -248,7 +249,7 @@ export default class Uploader<F> extends Emitter {
 		if (this.status !== STATUS_UPLOADER.WAITING) {
 			throw new Error();
 		}
-		this.option.upload = value;
+		this.option.Upload = value;
 	}
 
 	public set fileSize(value: number) {

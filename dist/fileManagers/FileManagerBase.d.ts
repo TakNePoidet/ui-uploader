@@ -3,6 +3,10 @@ export interface FileManagerApi {
     disabled: boolean;
     input(): void;
 }
+export interface OptionDefaultFileManager {
+    accept: FileAccept;
+    count: FileCount;
+}
 export declare class FileManagerBase {
     protected uploaderApi: UploaderPrivateApi;
     protected _disabled: boolean;

@@ -2,8 +2,8 @@ import Uploader from './Uploader';
 
 export function create<F>(...args: ConstructorParameters<typeof Uploader>) {
 	const uploader = new Uploader<F>(...args);
-	const props = ['disabled', 'accept', 'count', 'upload', 'fileSize', 'status', 'input', 'value', 'multiple', 'files'];
-	const methods = ['on', 'off', 'destroy', 'seleced', 'clear'];
+	const props = ['disabled', 'accept', 'count', 'upload', 'fileSize', 'status', 'value', 'multiple', 'files'];
+	const methods = ['on', 'off', 'destroy', 'seleced', 'clear', 'input'];
 
 	const api = new Proxy(uploader, {
 		set(_, prop: string, val) {

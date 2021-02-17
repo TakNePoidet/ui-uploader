@@ -1,9 +1,35 @@
-import { UploaderPrivateApi, OptionDropzone } from '../interface';
-import { FileManagerBase } from './FileManagerBase';
-export declare const defaultOptionDropzone: OptionDropzone;
+import { UploaderPrivateApi, FileAccept, FileCount } from '../interface';
+import { FileManagerBase, OptionDefaultFileManager } from './FileManagerBase';
+export interface OptionDropzone {
+    accept: FileAccept;
+    count: FileCount;
+    string: {
+        buttonUplaod: string;
+        dropzoneDrag: string;
+        dropzoneDrop: string;
+    };
+}
+interface OptionDropzoneFileManager extends OptionDefaultFileManager {
+    accept: FileAccept;
+    count: FileCount;
+    string: {
+        buttonUplaod: string;
+        dropzoneDrag: string;
+        dropzoneDrop: string;
+    };
+}
 export declare class Dropzone extends FileManagerBase {
+    static default: {
+        accept: string;
+        count: number;
+        string: {
+            buttonUplaod: string;
+            dropzoneDrag: string;
+            dropzoneDrop: string;
+        };
+    };
     protected nodes: Record<string, HTMLElement>;
-    protected option: OptionDropzone;
+    protected option: OptionDropzoneFileManager;
     protected listeners: string[];
     protected state: {
         textDropZone: string;
@@ -19,7 +45,7 @@ export declare class Dropzone extends FileManagerBase {
         activeDragzone: string;
         dropDragzone: string;
     };
-    constructor($el: HTMLElement, uploaderApi: UploaderPrivateApi, option?: Partial<OptionDropzone>);
+    constructor($el: HTMLElement, uploaderApi: UploaderPrivateApi, option?: Partial<OptionDropzoneFileManager>);
     private listener;
     protected onSeleced(files: File[]): void;
     private render;
@@ -40,3 +66,4 @@ export declare class Dropzone extends FileManagerBase {
     private toogleDropzone;
     private toogleDropDropzone;
 }
+export {};

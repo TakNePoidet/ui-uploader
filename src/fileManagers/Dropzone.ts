@@ -1,27 +1,44 @@
 import deepmerge from 'deepmerge';
-import { UploaderPrivateApi, OptionDropzone } from '../interface';
+import { UploaderPrivateApi, FileAccept, FileCount } from '../interface';
 
 import { append, bind, destroyHtml, make, reactive } from '../utils/util';
 import { getFilesAsync } from '../previews/dataTransfer';
-import { FileManagerBase } from './FileManagerBase';
+import { FileManagerBase, OptionDefaultFileManager } from './FileManagerBase';
 
-
-
-export const defaultOptionDropzone: OptionDropzone = {
-	accept: '*',
-	count: 1,
+export interface OptionDropzone {
+	accept: FileAccept;
+	count: FileCount;
 	string: {
-		buttonUplaod: 'Загрузить файл',
-		dropzoneDrag: 'Перетащите файл сюда или загрузите вручную',
-		dropzoneDrop: 'Отпустите кнопку мыши, чтобы прикрепить файл/лы'
-	}
-};
-
-
+		buttonUplaod: string;
+		// dropzoneDefault: string;
+		dropzoneDrag: string,
+		dropzoneDrop: string,
+	};
+}
+interface OptionDropzoneFileManager extends OptionDefaultFileManager {
+	accept: FileAccept;
+	count: FileCount;
+	string: {
+		buttonUplaod: string;
+		// dropzoneDefault: string;
+		dropzoneDrag: string,
+		dropzoneDrop: string,
+	};
+}
 export class Dropzone extends FileManagerBase {
+	public static default = {
+		accept: '*',
+		count: 1,
+		string: {
+			buttonUplaod: 'Загрузить файл',
+			dropzoneDrag: 'Перетащите файл сюда или загрузите вручную',
+			dropzoneDrop: 'Отпустите кнопку мыши, чтобы прикрепить файл/лы'
+		}
+	};
+
 	protected nodes: Record<string, HTMLElement>;
 
-	protected option: OptionDropzone;
+	protected option: OptionDropzoneFileManager;
 
 	protected listeners: string[] = [];
 
@@ -41,9 +58,9 @@ export class Dropzone extends FileManagerBase {
 		};
 	}
 
-	constructor($el: HTMLElement, uploaderApi: UploaderPrivateApi, option: Partial<OptionDropzone> = {}) {
+	constructor($el: HTMLElement, uploaderApi: UploaderPrivateApi, option: Partial<OptionDropzoneFileManager> = {}) {
 		super(uploaderApi);
-		this.option = deepmerge(defaultOptionDropzone, option);
+		this.option = deepmerge(Dropzone.default, option);
 		this.nodes = {
 			container: $el,
 			wrapper: make('div', { className: [this.css.wrapper] }),
@@ -165,8 +182,6 @@ export class Dropzone extends FileManagerBase {
 			this.nodes.input.click();
 		}
 	}
-
-
 
 	private preventDefaults(e: DragEvent) {
 		e.preventDefault();

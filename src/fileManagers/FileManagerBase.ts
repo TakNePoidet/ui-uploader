@@ -14,6 +14,13 @@ export interface FileManagerApi {
 // }
 
 
+export interface OptionDefaultFileManager {
+	accept: FileAccept;
+	count: FileCount;
+}
+
+
+
 
 export class FileManagerBase {
 
@@ -52,35 +59,3 @@ export class FileManagerBase {
 }
 type FileManagerPrivateApi = FileManagerBase;
 type FileManagerConstructor = new (_uploaderApi: UploaderPrivateApi) => FileManagerPrivateApi;
-// export class FileManagerBase {
-// 	// protected _disabled: boolean = false;
-
-// 	constructor(protected _uploaderApi: UploaderPrivateApi) { }
-
-// 	public get disabled(): boolean {
-// 		return this._disabled;
-// 	}
-
-// 	public set disabled(value: boolean) {
-// 		this._disabled = value;
-// 	}
-
-// 	public destroy() {
-// 		throw new Error('Not prop destroy');
-// 	}
-
-// 	set accept(value: string | string[]) {
-// 		throw new Error('Not prop accept');
-// 	}
-
-// 	set count(value: number) {
-// 		throw new Error('Not prop count');
-// 	}
-
-// 	input() {
-// 		throw new Error('Not init method input');
-// 	};
-
-
-// }
-

@@ -1,8 +1,10 @@
 
 // import { EventUploaderType } from './interface';
 import { Emitter } from './Emitter';
+import { FileManagerBase } from './fileManagers';
 import { PreviewItem } from './previews';
 import { Listeners } from './utils/Listeners';
+
 
 export enum StatusUploadApi {
 	'SUCCESS' = 'success',
@@ -24,7 +26,7 @@ export interface UploadResultCancel {
 }
 
 export type UploadResult = UploadResultSuccess | UploadResultError | UploadResultCancel;
-
+export type FileManagerBaseConstructors = { new(...args: any[]): FileManagerBase; };
 
 export enum STATUS_UPLOADER {
 	NOT_READY = 'notReady',
@@ -106,27 +108,21 @@ export interface UploaderPrivateApi {
 	off: (...args: Parameters<Emitter['off']>) => void;
 }
 
-export interface OptionDropzone {
-	accept: FileAccept;
-	count: FileCount;
-	string: {
-		buttonUplaod: string;
-		// dropzoneDefault: string;
-		dropzoneDrag: string,
-		dropzoneDrop: string,
-	};
-}
+
 export interface UploadApi {
 	send(): Promise<any>;
 	destroy(): void;
 }
-export interface OptionUploader extends OptionDropzone {
+export interface OptionUploader {
+	accept: FileAccept;
+	count: FileCount;
 	fileSize: number;
 	errors: {
 		accept: string;
 		fileSize: string;
 	};
-	upload: new (...args: any[]) => UploadApi;
+	FileManager: FileManagerBaseConstructors;
+	Upload: new (...args: any[]) => UploadApi;
 }
 
 
