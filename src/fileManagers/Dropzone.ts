@@ -2,7 +2,7 @@ import deepmerge from 'deepmerge';
 import { UploaderPrivateApi, FileAccept, FileCount, EventUploaderType } from '../interface';
 
 import { append, bind, destroyHtml, make, reactive } from '../utils/util';
-import { getFilesAsync } from '../previews/dataTransfer';
+import { getFilesAsync } from '../utils/dataTransfer';
 import { FileManagerBase, OptionDefaultFileManager } from './FileManagerBase';
 
 export interface OptionDropzone {
@@ -118,9 +118,9 @@ export class Dropzone extends FileManagerBase {
 		});
 
 
-		['paste'].forEach(eventName => {
-			this.addEvent(document.body, eventName, this.pasteHandler);
-		});
+		// ['paste'].forEach(eventName => {
+		// 	this.addEvent(document.body, eventName, this.pasteHandler);
+		// });
 
 
 	}
@@ -237,7 +237,6 @@ export class Dropzone extends FileManagerBase {
 	private async dropHandler(event: DragEvent) {
 		this.toogleDropzone(false);
 		this.toogleDropDropzone(false);
-
 		const files: File[] = [];
 		for (const file of await getFilesAsync(event.dataTransfer!)) {
 			files.push(file);
@@ -247,9 +246,10 @@ export class Dropzone extends FileManagerBase {
 
 	@bind
 	private async pasteHandler(event: ClipboardEvent) {
+		console.log(event.clipboardData);
 		const files: File[] = [];
 		const filesClipboard = await getFilesAsync(event.clipboardData);
-		if (filesClipboard) {
+		if (filesClipboard.length > 0) {
 			event.preventDefault();
 		}
 		for (const file of filesClipboard) {

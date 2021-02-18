@@ -35,11 +35,17 @@ interface DataTransferItem {
 
 
 function isDirectory(entry: FileSystemEntry): entry is FileSystemDirectoryEntry {
-	return entry.isDirectory;
+	if (entry && typeof entry.isDirectory !== 'undefined') {
+		return entry.isDirectory;
+	}
+	return false;
 }
 
 function isFile(entry: FileSystemEntry): entry is FileSystemFileEntry {
-	return entry.isFile;
+	if (entry && typeof entry.isFile !== 'undefined') {
+		return entry.isFile;
+	}
+	return false;
 }
 
 
