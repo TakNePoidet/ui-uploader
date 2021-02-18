@@ -65,11 +65,16 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 	}
 
 	set files(value) {
+		this.fileManager.api.status(this._files.size > 0 ? 'filled' : 'empty');
 		this._files = value;
+	}
+
+	private pushFile(file: F, key = generateId('file')) {
+		this.files.set(key, file);
 		this.fileManager.api.status(this._files.size > 0 ? 'filled' : 'empty');
 	}
 
-	constructor($el: HTMLElement, option: Partial<OptionUploader & M> = {}, state: F[] = []) {
+	constructor($el: HTMLElement, option: Partial<OptionUploader & M> = {}, state: F[] | F | null = null) {
 		super($el);
 		this.option = deepmerge(defaultOption, option);
 		this.nodes.container = $el;
@@ -85,10 +90,12 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 		this.nodes.preview = preview;
 		this.nodes.fileManager = fileManager;
 
-		for (const file of state) {
-			this.files.set(generateId('file'), file);
-		}
 
+		if (state) {
+			for (const file of Array.isArray(state) ? state : [state]) {
+				this.pushFile(file);
+			}
+		}
 		this.on(EventUploaderType.SELECTED, ({ files }) => {
 			this.seleced(files);
 		});
@@ -102,6 +109,7 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 				this.uploaders();
 			}
 		});
+
 	}
 
 	private render() {
@@ -160,7 +168,7 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 				this.createEvent(EventUploaderType.ERROR, { error: new Error(response.error.message), preview });
 			}
 			if (response.status === StatusUploadApi.SUCCESS) {
-				this.files.set(preview.id, response.result);
+				this.pushFile(response.result, preview.id);
 				preview.status = FILE_STATUS.SUCCESS;
 				this.createEvent(EventUploaderType.LOADED, {
 					file: response.result

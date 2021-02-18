@@ -13,7 +13,8 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
     private get api();
     get files(): Map<string, F>;
     set files(value: Map<string, F>);
-    constructor($el: HTMLElement, option?: Partial<OptionUploader & M>, state?: F[]);
+    private pushFile;
+    constructor($el: HTMLElement, option?: Partial<OptionUploader & M>, state?: F[] | F | null);
     private render;
     seleced(files: File[]): Promise<void>;
     private uploaders;

@@ -1,6 +1,6 @@
 {
 	"name": "ui-uploader",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"description": "Интерфес для загрузки файлов с кастомной реализацией загрузки на сервер",
 	"main": "dist/index.js",
 	"module": "dist/index.es.js",

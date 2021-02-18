@@ -99,14 +99,6 @@ export class Dropzone extends FileManagerBase {
 			}
 		});
 
-		this.uploaderApi.on(EventUploaderType.UPLOADED, () => {
-			this.nodes.button.innerText = this.option.string.filledUplaod;
-		});
-
-		this.uploaderApi.on(EventUploaderType.CLEAR, () => {
-			this.nodes.button.innerText = this.option.string.emptyUplaod;
-		});
-
 		['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
 			this.addEvent(this.nodes.wrapper, eventName, this.preventDefaults);
 		});
