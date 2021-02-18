@@ -247,9 +247,12 @@ export class Dropzone extends FileManagerBase {
 
 	@bind
 	private async pasteHandler(event: ClipboardEvent) {
-		event.preventDefault();
 		const files: File[] = [];
-		for (const file of await getFilesAsync(event.clipboardData)) {
+		const filesClipboard = await getFilesAsync(event.clipboardData);
+		if (filesClipboard) {
+			event.preventDefault();
+		}
+		for (const file of filesClipboard) {
 			files.push(file);
 		}
 		this.onSeleced(files);
