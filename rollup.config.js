@@ -12,8 +12,6 @@ const pkg = require('./package.json');
 
 const isDev = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 
-console.log(isDev);
-
 const plagins = [];
 
 if (!isDev) {
