@@ -18,16 +18,23 @@ export class Dom {
 		return $element;
 	}
 
-	public static make<T extends keyof HTMLElementTagNameMap>(tagName: T, options: Partial<Options | OptionsTag<T>> | null, ...children: (Node | string | number)[]) {
+	public static make<T extends keyof HTMLElementTagNameMap>(
+		tagName: T,
+		options: Partial<Options | OptionsTag<T>> | null,
+		...children: (Node | string | number)[]
+	) {
 		const $element: HTMLElementTagNameMap[T] = document.createElement(tagName);
+
 		if (options) {
 			const { className = [], dataset = {}, ...attr } = options;
+
 			if (Array.isArray(className)) {
 				$element.classList.add(...className);
 			} else if (className) {
 				$element.classList.add(className);
 			}
 			const attributes = attr as Record<string, any>;
+
 			for (const attrName in attributes) {
 				if (Object.prototype.hasOwnProperty.call(attributes, attrName)) {
 					($element as any)[attrName] = attributes[attrName];

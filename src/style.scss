@@ -3,7 +3,8 @@ $color-danger: #ff6a6a;
 $color-success: #41b883;
 $color-warning: #ffc107;
 .uploader {
-	font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
+		Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
 	border-radius: 3px;
 	background-color: #fff;
 	border: 1px solid rgba($color: #222, $alpha: 0.1);
@@ -110,7 +111,7 @@ $color-warning: #ffc107;
 	}
 }
 
-.standart-file-manager {
+.standard-file-manager {
 	box-sizing: border-box;
 	position: relative;
 	$self: &;
@@ -290,10 +291,6 @@ $color-warning: #ffc107;
 			display: block;
 		}
 	}
-	&#{$self}--uploading {
-		.preview-item-progress {
-		}
-	}
 	&#{$self}--error {
 		#{$self}__information {
 			#{$self}__delete {
@@ -336,7 +333,16 @@ $color-warning: #ffc107;
 
 	&#{$self}--processing {
 		#{$self}__line {
-			background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.3) 75%, transparent 75%, transparent);
+			background-image: linear-gradient(
+				135deg,
+				rgba(255, 255, 255, 0.3) 25%,
+				transparent 25%,
+				transparent 50%,
+				rgba(255, 255, 255, 0.3) 50%,
+				rgba(255, 255, 255, 0.3) 75%,
+				transparent 75%,
+				transparent
+			);
 			animation: animate-stripes 1s linear infinite;
 		}
 	}

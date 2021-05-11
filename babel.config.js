@@ -9,9 +9,5 @@ module.exports = {
 			}
 		]
 	],
-	plugins: [
-		'babel-plugin-add-module-exports',
-		'babel-plugin-class-display-name',
-		'@babel/plugin-transform-runtime'
-	]
+	plugins: ['babel-plugin-add-module-exports', 'babel-plugin-class-display-name', '@babel/plugin-transform-runtime']
 };

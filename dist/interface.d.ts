@@ -7,6 +7,7 @@ export declare enum StatusUploadApi {
     'ERROR' = "error",
     'CANCEL' = "cancel"
 }
+export declare type EmptyObject = Record<string, any>;
 export interface UploadResultSuccess {
     status: StatusUploadApi.SUCCESS;
     result: any;
@@ -115,6 +116,6 @@ export interface OptionUploader {
     FileManager: FileManagerBaseConstructors;
     Upload: new (...args: any[]) => UploadApi;
 }
-export interface PreviewApiFromUplaod {
+export interface PreviewApiFromUpload {
     updatePercent(percent: number): void;
 }

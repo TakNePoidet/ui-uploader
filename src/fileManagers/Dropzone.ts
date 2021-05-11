@@ -9,20 +9,19 @@ export interface OptionDropzone {
 	accept: FileAccept;
 	count: FileCount;
 	string: {
-		buttonUplaod: string;
-		// dropzoneDefault: string;
-		dropzoneDrag: string,
-		dropzoneDrop: string,
+		buttonUpload: string;
+		dropzoneDrag: string;
+		dropzoneDrop: string;
 	};
 }
 interface OptionDropzoneFileManager extends OptionDefaultFileManager {
 	accept: FileAccept;
 	count: FileCount;
 	string: {
-		emptyUplaod: string;
-		filledUplaod: string;
-		dropzoneDrag: string,
-		dropzoneDrop: string,
+		emptyUpload: string;
+		filledUpload: string;
+		dropzoneDrag: string;
+		dropzoneDrop: string;
 	};
 }
 export class Dropzone extends FileManagerBase {
@@ -30,8 +29,8 @@ export class Dropzone extends FileManagerBase {
 		accept: '*',
 		count: 1,
 		string: {
-			emptyUplaod: 'Загрузить файл',
-			filledUplaod: 'Загрузить другой файл',
+			emptyUpload: 'Загрузить файл',
+			filledUpload: 'Загрузить другой файл',
 			dropzoneDrag: 'Перетащите файл сюда или загрузите вручную',
 			dropzoneDrop: 'Отпустите кнопку мыши, чтобы прикрепить файл/лы'
 		}
@@ -45,7 +44,7 @@ export class Dropzone extends FileManagerBase {
 
 	protected state: { textDropZone: string; };
 
-	protected get css() {
+	protected get css(): Record<string, string> {
 		return {
 			container: 'dropzone',
 			wrapper: 'dropzone__wrapper',
@@ -67,7 +66,7 @@ export class Dropzone extends FileManagerBase {
 			wrapper: make('div', { className: [this.css.wrapper] }),
 			dragZone: make('div', { className: [this.css.dragZone] }),
 			control: make('div', { className: [this.css.control] }),
-			button: make('button', { className: [this.css.button], type: 'button' }, this.option.string.emptyUplaod),
+			button: make('button', { className: [this.css.button], type: 'button' }, this.option.string.emptyUpload),
 			input: make('input', {
 				className: [this.css.input],
 				type: 'file',
@@ -78,61 +77,63 @@ export class Dropzone extends FileManagerBase {
 		this.render();
 		this.listener();
 
-		this.state = reactive({
-			textDropZone: this.option.string.dropzoneDrag
-		}, (obj, prop, val) => {
-			switch (prop) {
-				case 'textDropZone':
-					this.nodes.dragZone.dataset.text = val;
-					break;
-				default:
-					break;
+		this.state = reactive(
+			{
+				textDropZone: this.option.string.dropzoneDrag
+			},
+			(obj, prop, val) => {
+				switch (prop) {
+					case 'textDropZone':
+						this.nodes.dragZone.dataset.text = val;
+						break;
+					default:
+						break;
+				}
 			}
-		});
+		);
 	}
 
 	private listener() {
-		this.addEvent(this.nodes.input, 'input', e => {
+		this.addEvent(this.nodes.input, 'input', (e) => {
 			const target = e.target as HTMLInputElement | null;
+
 			if (target && target.files) {
-				this.onSeleced(Array.from(target.files));
+				this.onSelected(Array.from(target.files));
 			}
 		});
 
-		['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+		['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
 			this.addEvent(this.nodes.wrapper, eventName, this.preventDefaults);
 		});
 
-		['dragover', 'dragenter'].forEach(eventName => {
+		['dragover', 'dragenter'].forEach((eventName) => {
 			this.addEvent(document.body, eventName, this.bodyDragOverHandler);
 			this.addEvent(this.nodes.dragZone, eventName, this.dragOverHandler);
 		});
 
-		['dragleave', 'dragend'].forEach(eventName => {
+		['dragleave', 'dragend'].forEach((eventName) => {
 			this.addEvent(document.body, eventName, this.bodyDragLeaveHandler);
 			this.addEvent(this.nodes.dragZone, eventName, this.dragLeaveHandler);
 		});
 
-		['drop'].forEach(eventName => {
+		['drop'].forEach((eventName) => {
 			this.addEvent(this.nodes.dragZone, eventName, this.dropHandler);
 		});
-
 
 		// ['paste'].forEach(eventName => {
 		// 	this.addEvent(document.body, eventName, this.pasteHandler);
 		// });
-
-
 	}
 
-	protected onSeleced(files: File[]) {
+	protected onSelected(files: File[]): void {
 		if (this.disabled !== true) {
-			super.onSeleced(files);
+			super.onSelected(files);
 		}
 	}
 
 	private render() {
 		const { container, wrapper, dragZone, input, button, control } = this.nodes;
+
 		container.classList.add(this.css.container);
 		append(control, input, button);
 		append(wrapper, dragZone, control);
@@ -142,19 +143,20 @@ export class Dropzone extends FileManagerBase {
 
 	get api() {
 		const self = this;
+
 		return {
 			status(value: 'empty' | 'filled') {
 				switch (value) {
 					case 'empty':
-						self.nodes.button.innerText = self.option.string.emptyUplaod;
+						self.nodes.button.innerText = self.option.string.emptyUpload;
 						break;
 					case 'filled':
-						self.nodes.button.innerText = self.option.string.filledUplaod;
+						self.nodes.button.innerText = self.option.string.filledUpload;
 						break;
 					default:
 						break;
 				}
-			},
+			}
 		};
 	}
 
@@ -171,10 +173,12 @@ export class Dropzone extends FileManagerBase {
 
 	private removeEvent($el: HTMLElement, type: string, handler: (event: any) => void): void {
 		const event = this.uploaderApi.listeners.findOne($el, type, handler);
+
 		if (!event) {
 			return;
 		}
-		const index = this.listeners.findIndex(eventId => eventId === event.id);
+		const index = this.listeners.findIndex((eventId) => eventId === event.id);
+
 		this.uploaderApi.listeners.offById(event.id);
 		this.listeners = this.listeners.slice(index, 1);
 	}
@@ -187,12 +191,14 @@ export class Dropzone extends FileManagerBase {
 	set accept(value: string | string[]) {
 		this.option.accept = value;
 		const input = this.nodes.input as HTMLInputElement;
+
 		input.accept = Array.isArray(this.option.accept) ? this.option.accept.join(', ') : this.option.accept;
 	}
 
 	set count(value: number) {
 		this.option.count = value;
 		const input = this.nodes.input as HTMLInputElement;
+
 		input.multiple = this.option.count > 1;
 	}
 
@@ -209,39 +215,42 @@ export class Dropzone extends FileManagerBase {
 
 	@bind
 	private bodyDragOverHandler(e: DragEvent) {
-		this.toogleDropzone(true);
+		this.toggleDropzone(true);
 	}
 
 	@bind
 	private bodyDragLeaveHandler(e: DragEvent) {
 		const relatedTarget = e.relatedTarget as HTMLElement;
+
 		if (!document.body.contains(relatedTarget)) {
-			this.toogleDropzone(false);
+			this.toggleDropzone(false);
 		}
 	}
 
 	@bind
 	private dragOverHandler() {
-		this.toogleDropDropzone();
+		this.toggleDropDropzone();
 	}
 
 	@bind
 	private dragLeaveHandler(e: DragEvent) {
 		const relatedTarget = e.relatedTarget as HTMLElement;
+
 		if (!this.nodes.dragZone.contains(relatedTarget)) {
-			this.toogleDropDropzone(false);
+			this.toggleDropDropzone(false);
 		}
 	}
 
 	@bind
 	private async dropHandler(event: DragEvent) {
-		this.toogleDropzone(false);
-		this.toogleDropDropzone(false);
+		this.toggleDropzone(false);
+		this.toggleDropDropzone(false);
 		const files: File[] = [];
+
 		for (const file of await getFilesAsync(event.dataTransfer!)) {
 			files.push(file);
 		}
-		this.onSeleced(files);
+		this.onSelected(files);
 	}
 
 	@bind
@@ -249,23 +258,24 @@ export class Dropzone extends FileManagerBase {
 		console.log(event.clipboardData);
 		const files: File[] = [];
 		const filesClipboard = await getFilesAsync(event.clipboardData);
+
 		if (filesClipboard.length > 0) {
 			event.preventDefault();
 		}
 		for (const file of filesClipboard) {
 			files.push(file);
 		}
-		this.onSeleced(files);
+		this.onSelected(files);
 	}
 
 	@bind
-	private toogleDropzone(show = true) {
+	private toggleDropzone(show = true) {
 		this.state.textDropZone = this.option.string.dropzoneDrop;
 		this.nodes.container.classList.toggle(this.css.activeDragzone, show);
 	}
 
 	@bind
-	private toogleDropDropzone(active = true) {
+	private toggleDropDropzone(active = true) {
 		this.state.textDropZone = active ? this.option.string.dropzoneDrop : this.option.string.dropzoneDrag;
 		this.nodes.container.classList.toggle(this.css.dropDragzone, active);
 	}

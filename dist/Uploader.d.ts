@@ -16,9 +16,9 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
     private pushFile;
     constructor($el: HTMLElement, option?: Partial<OptionUploader & M>, state?: F[] | F | null);
     private render;
-    seleced(files: File[]): Promise<void>;
+    selected(files: File[]): Promise<void>;
     private uploaders;
-    private uplaodItem;
+    private uploadItem;
     private enabledFileManaged;
     destroy(): void;
     protected setDisabled(value: boolean): void;

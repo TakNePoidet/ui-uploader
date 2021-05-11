@@ -1,14 +1,12 @@
 import { OptionDefaultFileManager } from './fileManagers/FileManagerBase';
-import { StandartFileManager } from './fileManagers/Standart';
+import { StandardFileManager } from './fileManagers/Standard';
 import { Dropzone, OptionDropzone } from './fileManagers';
 import './style.scss';
 
-import { create as uploader, InstanseUplaoder } from './creeate';
+import { create as uploader, InstanceUploader } from './create';
 
-
-export { UploadApi, PreviewApiFromUplaod } from './interface';
+export { UploadApi, PreviewApiFromUpload } from './interface';
 export { DefaultUploadConstructors } from './upload-constructors';
 
-export { Dropzone, StandartFileManager, OptionDropzone, OptionDefaultFileManager };
-export { uploader, InstanseUplaoder };
-
+export { Dropzone, StandardFileManager, OptionDropzone, OptionDefaultFileManager };
+export { uploader, InstanceUploader };

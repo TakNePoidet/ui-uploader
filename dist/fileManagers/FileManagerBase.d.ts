@@ -17,7 +17,7 @@ export declare class FileManagerBase {
     set accept(value: FileAccept);
     set count(value: FileCount);
     input(): void;
-    protected onSeleced(files: File[]): void;
+    protected onSelected(files: File[]): void;
     get api(): {
         status(value: 'empty' | 'filled'): void;
     };

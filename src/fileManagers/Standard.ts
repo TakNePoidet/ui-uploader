@@ -1,29 +1,29 @@
 import deepmerge from 'deepmerge';
-import { EventUploaderType, UploadApi, UploaderPrivateApi } from '../interface';
+import { EventUploaderType, UploaderPrivateApi } from '../interface';
 
 import { append, destroyHtml, make } from '../utils/util';
 import { FileManagerBase, OptionDefaultFileManager } from './FileManagerBase';
 
-interface OptionStandartFileManager extends OptionDefaultFileManager {
+interface OptionStandardFileManager extends OptionDefaultFileManager {
 	string: {
-		emptyUplaod: string,
-		filledUplaod: string,
+		emptyUpload: string;
+		filledUpload: string;
 	};
 }
 
-export class StandartFileManager extends FileManagerBase {
-	public static default: OptionStandartFileManager = {
+export class StandardFileManager extends FileManagerBase {
+	public static default: OptionStandardFileManager = {
 		accept: '*',
 		count: 1,
 		string: {
-			emptyUplaod: 'Загрузить файл',
-			filledUplaod: 'Загрузить другой файл',
+			emptyUpload: 'Загрузить файл',
+			filledUpload: 'Загрузить другой файл'
 		}
 	};
 
 	protected nodes: Record<string, HTMLElement>;
 
-	protected option: OptionStandartFileManager;
+	protected option: OptionStandardFileManager;
 
 	protected listeners: string[] = [];
 
@@ -31,23 +31,23 @@ export class StandartFileManager extends FileManagerBase {
 
 	protected get css() {
 		return {
-			container: 'standart-file-manager',
-			wrapper: 'standart-file-manager__wrapper',
-			control: 'standart-file-manager__control',
-			button: 'standart-file-manager__button',
-			input: 'standart-file-manager__input',
-			hide: 'standart-file-manager--hide',
+			container: 'standard-file-manager',
+			wrapper: 'standard-file-manager__wrapper',
+			control: 'standard-file-manager__control',
+			button: 'standard-file-manager__button',
+			input: 'standard-file-manager__input',
+			hide: 'standard-file-manager--hide'
 		};
 	}
 
-	constructor($el: HTMLElement, uploaderApi: UploaderPrivateApi, option: Partial<OptionStandartFileManager> = {}) {
+	constructor($el: HTMLElement, uploaderApi: UploaderPrivateApi, option: Partial<OptionStandardFileManager> = {}) {
 		super(uploaderApi);
-		this.option = deepmerge(StandartFileManager.default, option);
+		this.option = deepmerge(StandardFileManager.default, option);
 		this.nodes = {
 			container: $el,
 			wrapper: make('div', { className: [this.css.wrapper] }),
 			control: make('div', { className: [this.css.control] }),
-			button: make('button', { className: [this.css.button], type: 'button' }, this.option.string.emptyUplaod),
+			button: make('button', { className: [this.css.button], type: 'button' }, this.option.string.emptyUpload),
 			input: make('input', {
 				className: [this.css.input],
 				type: 'file',
@@ -60,30 +60,32 @@ export class StandartFileManager extends FileManagerBase {
 	}
 
 	private listener() {
-		this.addEvent(this.nodes.input, 'input', e => {
+		this.addEvent(this.nodes.input, 'input', (e) => {
 			const target = e.target as HTMLInputElement | null;
+
 			if (target && target.files) {
-				this.onSeleced(Array.from(target.files));
+				this.onSelected(Array.from(target.files));
 			}
 		});
 
 		this.uploaderApi.on(EventUploaderType.UPLOADED, () => {
-			this.nodes.button.innerText = this.option.string.filledUplaod;
+			this.nodes.button.innerText = this.option.string.filledUpload;
 		});
 
 		this.uploaderApi.on(EventUploaderType.CLEAR, () => {
-			this.nodes.button.innerText = this.option.string.emptyUplaod;
+			this.nodes.button.innerText = this.option.string.emptyUpload;
 		});
 	}
 
-	protected onSeleced(files: File[]) {
+	protected onSelected(files: File[]) {
 		if (this.disabled !== true) {
-			super.onSeleced(files);
+			super.onSelected(files);
 		}
 	}
 
 	private render() {
 		const { container, wrapper, input, button, control } = this.nodes;
+
 		container.classList.add(this.css.container);
 		append(control, input, button);
 		append(wrapper, control);
@@ -103,10 +105,12 @@ export class StandartFileManager extends FileManagerBase {
 
 	private removeEvent($el: HTMLElement, type: string, handler: (event: any) => void): void {
 		const event = this.uploaderApi.listeners.findOne($el, type, handler);
+
 		if (!event) {
 			return;
 		}
-		const index = this.listeners.findIndex(eventId => eventId === event.id);
+		const index = this.listeners.findIndex((eventId) => eventId === event.id);
+
 		this.uploaderApi.listeners.offById(event.id);
 		this.listeners = this.listeners.slice(index, 1);
 	}
@@ -119,32 +123,33 @@ export class StandartFileManager extends FileManagerBase {
 	set accept(value: string | string[]) {
 		this.option.accept = value;
 		const input = this.nodes.input as HTMLInputElement;
+
 		input.accept = Array.isArray(this.option.accept) ? this.option.accept.join(', ') : this.option.accept;
 	}
 
 	set count(value: number) {
 		this.option.count = value;
 		const input = this.nodes.input as HTMLInputElement;
+
 		input.multiple = this.option.count > 1;
 	}
 
-
-
 	get api() {
 		const self = this;
+
 		return {
 			status(value: 'empty' | 'filled') {
 				switch (value) {
 					case 'empty':
-						self.nodes.button.innerText = self.option.string.emptyUplaod;
+						self.nodes.button.innerText = self.option.string.emptyUpload;
 						break;
 					case 'filled':
-						self.nodes.button.innerText = self.option.string.filledUplaod;
+						self.nodes.button.innerText = self.option.string.filledUpload;
 						break;
 					default:
 						break;
 				}
-			},
+			}
 		};
 	}
 

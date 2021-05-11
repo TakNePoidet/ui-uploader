@@ -1,15 +1,15 @@
 import { UploaderPrivateApi } from '../interface';
 import { FileManagerBase, OptionDefaultFileManager } from './FileManagerBase';
-interface OptionStandartFileManager extends OptionDefaultFileManager {
+interface OptionStandardFileManager extends OptionDefaultFileManager {
     string: {
-        emptyUplaod: string;
-        filledUplaod: string;
+        emptyUpload: string;
+        filledUpload: string;
     };
 }
-export declare class StandartFileManager extends FileManagerBase {
-    static default: OptionStandartFileManager;
+export declare class StandardFileManager extends FileManagerBase {
+    static default: OptionStandardFileManager;
     protected nodes: Record<string, HTMLElement>;
-    protected option: OptionStandartFileManager;
+    protected option: OptionStandardFileManager;
     protected listeners: string[];
     protected state: {
         textDropZone: string;
@@ -22,9 +22,9 @@ export declare class StandartFileManager extends FileManagerBase {
         input: string;
         hide: string;
     };
-    constructor($el: HTMLElement, uploaderApi: UploaderPrivateApi, option?: Partial<OptionStandartFileManager>);
+    constructor($el: HTMLElement, uploaderApi: UploaderPrivateApi, option?: Partial<OptionStandardFileManager>);
     private listener;
-    protected onSeleced(files: File[]): void;
+    protected onSelected(files: File[]): void;
     private render;
     destroy(): void;
     private addEvent;

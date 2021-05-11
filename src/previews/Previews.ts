@@ -1,17 +1,16 @@
 import { UploaderPrivateApi, FILE_STATUS } from '../interface';
 
-
 import { append, generateId } from '../utils/util';
 import { PreviewItem } from './PreviewItem';
 
 export class Previews {
-
 	public items = new Map<string, PreviewItem>();
 
-	constructor(private $container: HTMLElement, private uploaderApi: UploaderPrivateApi) { }
+	constructor(private $container: HTMLElement, private uploaderApi: UploaderPrivateApi) {}
 
 	public newPreview(file: File): PreviewItem {
 		const preview = new PreviewItem(file, generateId('file'), this.uploaderApi);
+
 		this.items.set(preview.id, preview);
 		return preview;
 	}
@@ -30,6 +29,7 @@ export class Previews {
 
 	public removePreviewItem(id: string) {
 		const preview = this.items.get(id);
+
 		if (preview) {
 			preview.destroy();
 			this.items.delete(id);

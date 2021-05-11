@@ -1,11 +1,7 @@
-
-
 interface Metadata {
 	modificationTime: Date;
 	size: number;
 }
-
-
 
 interface FileSystemEntry {
 	fullPath: string;
@@ -32,8 +28,6 @@ interface DataTransferItem {
 	webkitGetAsEntry(): FileSystemEntry;
 }
 
-
-
 function isDirectory(entry: FileSystemEntry): entry is FileSystemDirectoryEntry {
 	if (entry && typeof entry.isDirectory !== 'undefined') {
 		return entry.isDirectory;
@@ -48,8 +42,6 @@ function isFile(entry: FileSystemEntry): entry is FileSystemFileEntry {
 	return false;
 }
 
-
-
 function readDirectoryReader(reader: FileSystemDirectoryReader): Promise<any> {
 	return new Promise((resolve) => {
 		reader.readEntries((entries: any) => {
@@ -61,19 +53,17 @@ function readDirectoryReader(reader: FileSystemDirectoryReader): Promise<any> {
 function readEntryFile(entry: FileSystemEntry): Promise<File> {
 	return new Promise((resolve) => {
 		if (isFile(entry)) {
-			entry.file(file => {
+			entry.file((file) => {
 				resolve(file);
 			});
 		}
 	});
 }
 
-
-
-
 export async function getFilesAsync(dataTransfer: DataTransfer) {
 	const fileEntrys: FileSystemFileEntry[] = [];
 	const files: File[] = [];
+
 	function readEntry(entry: FileSystemEntry): Promise<void> {
 		return new Promise((resolve) => {
 			if (isFile(entry)) {
@@ -86,20 +76,23 @@ export async function getFilesAsync(dataTransfer: DataTransfer) {
 		if (isDirectory(item)) {
 			const directoryReader = item.createReader();
 			const entries = await readDirectoryReader(directoryReader);
+
 			for await (const entry of entries) {
 				await scanFiles(entry);
 			}
 		} else if (isFile(item)) {
 			await readEntry(item);
 		}
-	};
+	}
 	for await (const item of Array.from(dataTransfer.items)) {
 		if (item.kind === 'file') {
 			if (typeof item.webkitGetAsEntry === 'function') {
 				const entry = item.webkitGetAsEntry();
+
 				await scanFiles(entry);
 			} else {
 				const file = item.getAsFile();
+
 				if (file) {
 					files.push(file);
 				}
@@ -108,6 +101,7 @@ export async function getFilesAsync(dataTransfer: DataTransfer) {
 	}
 	for await (const entry of fileEntrys) {
 		const file = await readEntryFile(entry);
+
 		files.push(file);
 	}
 	return files;

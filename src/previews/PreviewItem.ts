@@ -1,23 +1,21 @@
 import { FILE_STATUS, EventUploaderType, UploaderPrivateApi } from '../interface';
 
-import { append, destroyHtml, filesizeformat, make } from '../utils/util';
+import { append, destroyHtml, fileSizeFormat, make } from '../utils/util';
 // @ts-ignore
 import CancelIcon from '../svg/002-close.inline.svg';
 // @ts-ignore
 import ReplayIcon from '../svg/001-replay.inline.svg';
-
 
 export class PreviewItem {
 	private _status: FILE_STATUS;
 
 	private _error: null | string = null;
 
-	private _progress: number = 0;
+	private _progress = 0;
 
 	private nodes: Record<string, HTMLElement>;
 
 	protected listeners: string[] = [];
-
 
 	private _isReplay = false;
 
@@ -39,11 +37,7 @@ export class PreviewItem {
 			progressLine: 'preview-item-progress__line',
 			progressProcessing: 'preview-item-progress--processing',
 
-
-
 			isReplay: ['preview-item--replay']
-
-
 		};
 	}
 
@@ -66,6 +60,7 @@ export class PreviewItem {
 	set isReplay(value) {
 		this._isReplay = value;
 		const className = Array.isArray(this.css.isReplay) ? this.css.isReplay[0] : this.css.isReplay;
+
 		this.nodes.container.classList.toggle(className, value);
 	}
 
@@ -79,7 +74,11 @@ export class PreviewItem {
 			if (Object.prototype.hasOwnProperty.call(FILE_STATUS, key)) {
 				// @ts-ignore
 				const status = FILE_STATUS[key];
-				this.nodes.container.classList.toggle(`${this.css.container}--${status.replace(/[A-Z]/g, (m: string) => `-${m.toLowerCase()}`)}`, this.status === status);
+
+				this.nodes.container.classList.toggle(
+					`${this.css.container}--${status.replace(/[A-Z]/g, (m: string) => `-${m.toLowerCase()}`)}`,
+					this.status === status
+				);
 			}
 		}
 		this.nodes.progressContainer.classList.remove(this.css.progressProcessing);
@@ -87,6 +86,7 @@ export class PreviewItem {
 
 	set progress(value: number) {
 		const { progressLine } = this.nodes;
+
 		progressLine.style.width = `${value}%`;
 		this._progress = value;
 		if (value === 100) {
@@ -122,10 +122,12 @@ export class PreviewItem {
 
 	private removeEvent($el: HTMLElement, type: string, handler: (event: Event) => void): void {
 		const event = this.uploaderApi.listeners.findOne($el, type, handler);
+
 		if (!event) {
 			return;
 		}
-		const index = this.listeners.findIndex(eventId => eventId === event.id);
+		const index = this.listeners.findIndex((eventId) => eventId === event.id);
+
 		this.uploaderApi.listeners.offById(event.id);
 		this.listeners = this.listeners.slice(index, 1);
 	}
@@ -135,10 +137,10 @@ export class PreviewItem {
 		const { information, error } = this.nodes;
 		const { name, size } = this.file;
 		const type = /[^.]+$/.exec(this.file.type);
+
 		this.nodes.type = make('div', { className: this.css.type }, make('span', null, type ? type.toString() : 'unknown'));
 		this.nodes.title = make('div', { className: this.css.title }, name);
-		this.nodes.size = make('div', { className: this.css.size }, filesizeformat(size).join(' '));
-
+		this.nodes.size = make('div', { className: this.css.size }, fileSizeFormat(size).join(' '));
 
 		const { actions, actionCancel, actionReplay } = this.nodes;
 
@@ -147,21 +149,25 @@ export class PreviewItem {
 		append(actions, actionCancel, actionReplay);
 		append(information, this.nodes.type, this.nodes.title, this.nodes.size, actions);
 
-		this.addEvent(actionCancel, 'click', event => {
+		this.addEvent(actionCancel, 'click', (event) => {
 			event.preventDefault();
 			if ([FILE_STATUS.ADDED, FILE_STATUS.QUEUED, FILE_STATUS.UPLOADING].includes(this.status)) {
-				this.uploaderApi.createEvent(EventUploaderType.CANCEL, { preview: this });
+				this.uploaderApi.createEvent(EventUploaderType.CANCEL, {
+					preview: this
+				});
 				this.status = FILE_STATUS.CANCELED;
 				this.isReplay = true;
 			}
 		});
 
-		this.addEvent(actionReplay, 'click', event => {
+		this.addEvent(actionReplay, 'click', (event) => {
 			event.preventDefault();
 			if (this.isReplay) {
 				this.status = FILE_STATUS.QUEUED;
 				this.progress = 0;
-				this.uploaderApi.createEvent(EventUploaderType.REPLAY, { preview: this });
+				this.uploaderApi.createEvent(EventUploaderType.REPLAY, {
+					preview: this
+				});
 				this.error = '';
 				this.isReplay = false;
 			}
@@ -170,6 +176,7 @@ export class PreviewItem {
 		append(container, information);
 		append(container, error);
 		const { progressContainer, progressLine } = this.nodes;
+
 		append(progressContainer, progressLine);
 		append(container, progressContainer);
 		this.progress = 0;
@@ -179,5 +186,4 @@ export class PreviewItem {
 	public show() {
 		this.nodes.container.classList.add(this.css.show);
 	}
-
 }

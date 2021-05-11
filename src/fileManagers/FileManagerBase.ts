@@ -1,32 +1,20 @@
 import { FileCount, FileAccept, UploaderPrivateApi, EventUploaderType } from '../interface';
 
-
-
-
 export interface FileManagerApi {
 	disabled: boolean;
 	// destroy(): void;
 	input(): void;
 }
 
-// export interface FileManagerPrivateApi extends FileManagerApi {
-// 	_onSeleced(files: FileList): void;
-// }
-
-
 export interface OptionDefaultFileManager {
 	accept: FileAccept;
 	count: FileCount;
 }
 
-
-
-
 export class FileManagerBase {
+	protected _disabled = false;
 
-	protected _disabled: boolean = false;
-
-	constructor(protected uploaderApi: UploaderPrivateApi) { }
+	constructor(protected uploaderApi: UploaderPrivateApi) {}
 
 	public get disabled() {
 		return this._disabled;
@@ -42,24 +30,25 @@ export class FileManagerBase {
 
 	public set accept(value: FileAccept) {
 		throw new Error('Not prop accept');
-	};
+	}
 
 	public set count(value: FileCount) {
 		throw new Error('Not prop count');
-	};
-
+	}
 
 	public input(): void {
 		throw new Error('Method not implemented.');
 	}
 
-	protected onSeleced(files: File[]) {
-		this.uploaderApi.createEvent(EventUploaderType.SELECTED, { files: Array.from(files) });
+	protected onSelected(files: File[]) {
+		this.uploaderApi.createEvent(EventUploaderType.SELECTED, {
+			files: Array.from(files)
+		});
 	}
 
 	get api() {
 		return {
-			status(value: 'empty' | 'filled') { }
+			status(value: 'empty' | 'filled') {}
 		};
 	}
 }

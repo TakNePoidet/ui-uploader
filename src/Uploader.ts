@@ -1,8 +1,17 @@
 import deepmerge from 'deepmerge';
-import { FileManagerBase, StandartFileManager } from './fileManagers';
-import { EventUploaderType, OptionUploader, STATUS_UPLOADER, UploaderPrivateApi, FILE_STATUS, StatusUploadApi, UploadResult, UploadApi } from './interface';
+import { FileManagerBase, StandardFileManager } from './fileManagers';
+import {
+	EventUploaderType,
+	OptionUploader,
+	STATUS_UPLOADER,
+	UploaderPrivateApi,
+	FILE_STATUS,
+	StatusUploadApi,
+	UploadResult,
+	UploadApi
+} from './interface';
 import { Previews } from './previews/Previews';
-import { append, checkAccept, destroyHtml, errorTemplate, filesizeformat, generateId, make } from './utils/util';
+import { append, checkAccept, destroyHtml, errorTemplate, fileSizeFormat, generateId, make } from './utils/util';
 import { DefaultUploadConstructors } from './upload-constructors';
 import { Emitter } from './Emitter';
 import { PreviewItem } from './previews';
@@ -16,7 +25,7 @@ const defaultOption: OptionUploader = {
 		fileSize: 'Размер файла не может быть больше :max.'
 	},
 	Upload: DefaultUploadConstructors,
-	FileManager: StandartFileManager
+	FileManager: StandardFileManager
 };
 
 export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
@@ -30,13 +39,13 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 
 	private _files = new Map<string, F>();
 
-	private _disabled: boolean = false;
+	private _disabled = false;
 
 	private _status: STATUS_UPLOADER = STATUS_UPLOADER.NOT_READY;
 
-	private _multiple: boolean = false;
+	private _multiple = false;
 
-	private get css() {
+	private get css(): Record<string, string> {
 		return {
 			container: 'uploader',
 			wrapper: 'uploader__wrapper',
@@ -48,15 +57,16 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 
 	private get api(): UploaderPrivateApi {
 		const self = this;
+
 		return {
-			on: (...args: Parameters<Emitter<F>['on']>) => {
+			on(...args: Parameters<Emitter<F>['on']>) {
 				self.on(...args);
 			},
-			off: (...args: Parameters<Emitter<F>['off']>) => {
+			off(...args: Parameters<Emitter<F>['off']>) {
 				self.off(...args);
 			},
 			listeners: this.listeners,
-			createEvent: this.createEvent,
+			createEvent: this.createEvent
 		};
 	}
 
@@ -78,7 +88,7 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 		super($el);
 		this.option = deepmerge(defaultOption, option);
 		this.nodes.container = $el;
-		const api = this.api;
+		const { api } = this;
 		const wrapper = make('div', { className: this.css.wrapper });
 		const preview = make('div', { className: this.css.preview });
 		const fileManager = make('div', { className: this.css.fileManager });
@@ -90,14 +100,13 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 		this.nodes.preview = preview;
 		this.nodes.fileManager = fileManager;
 
-
 		if (state) {
 			for (const file of Array.isArray(state) ? state : [state]) {
 				this.pushFile(file);
 			}
 		}
 		this.on(EventUploaderType.SELECTED, ({ files }) => {
-			this.seleced(files);
+			this.selected(files);
 		});
 
 		setTimeout(() => this.createEvent(EventUploaderType.INIT), 0);
@@ -109,17 +118,17 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 				this.uploaders();
 			}
 		});
-
 	}
 
 	private render() {
 		const { container, wrapper, preview, fileManager } = this.nodes;
+
 		container.classList.add(this.css.container);
 		append(wrapper, preview, fileManager);
 		append(container, wrapper);
 	}
 
-	public async seleced(files: File[]) {
+	public async selected(files: File[]) {
 		if (this.status === STATUS_UPLOADER.WAITING) {
 			await this.previews.clear();
 			this.files.clear();
@@ -139,6 +148,7 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 		const file = files.shift() as File;
 
 		const preview = this.previews.newPreview(file);
+
 		if (!checkAccept(preview.file.type, this.option.accept)) {
 			preview.error = errorTemplate(this.option.errors.accept, {
 				values: Array.isArray(this.option.accept) ? this.option.accept.join(',') : this.option.accept
@@ -146,14 +156,14 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 		}
 		if (preview.file.size > this.option.fileSize) {
 			preview.error = errorTemplate(this.option.errors.fileSize, {
-				max: filesizeformat(this.option.fileSize).join('')
+				max: fileSizeFormat(this.option.fileSize).join('')
 			});
 		}
 		if (preview.status === FILE_STATUS.ERROR) {
 			this.createEvent(EventUploaderType.ERROR, { error: new Error(preview.error), preview });
 		}
 		this.previews.render(preview);
-		await this.seleced(files);
+		await this.selected(files);
 	}
 
 	private async uploaders() {
@@ -161,7 +171,8 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 
 		if (preview) {
 			preview.status = FILE_STATUS.UPLOADING;
-			const response = await this.uplaodItem(preview);
+			const response = await this.uploadItem(preview);
+
 			if (response.status === StatusUploadApi.ERROR) {
 				preview.error = response.error.message;
 				preview.isReplay = true;
@@ -182,10 +193,10 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 		}
 	}
 
-	private uplaodItem(preview: PreviewItem): Promise<UploadResult> {
+	private uploadItem(preview: PreviewItem): Promise<UploadResult> {
 		return new Promise(async (resolve) => {
 			const UploadConstructor = this.option.Upload;
-			const uplaodApi = new UploadConstructor(preview.file, {
+			const uploadApi = new UploadConstructor(preview.file, {
 				updatePercent: (percent: number) => {
 					preview.progress = percent;
 					this.createEvent(EventUploaderType.UNLOADING, {
@@ -194,20 +205,23 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 				}
 			});
 			const cancel = () => {
-				uplaodApi.destroy();
+				uploadApi.destroy();
 				resolve({ status: StatusUploadApi.CANCEL });
 			};
+
 			this.on(EventUploaderType.BEFORE_DESTROYED, cancel);
 			this.on(EventUploaderType.CANCEL, cancel);
 			// this.on(EventUploaderType., cancel);
 			let response: UploadResult;
+
 			try {
-				const result = await uplaodApi.send();
+				const result = await uploadApi.send();
+
 				response = { status: StatusUploadApi.SUCCESS, result };
 			} catch (error) {
 				response = { status: StatusUploadApi.ERROR, error };
 			}
-			this.off(EventUploaderType.BEFORE_DESTROYED, uplaodApi.destroy);
+			this.off(EventUploaderType.BEFORE_DESTROYED, uploadApi.destroy);
 			resolve(response);
 		});
 	}
@@ -281,7 +295,8 @@ export default class Uploader<F, M extends {} = {}> extends Emitter<F> {
 	}
 
 	public get value() {
-		const files = Array.from(this.files.entries()).map((([, file]) => file));
+		const files = Array.from(this.files.entries()).map(([, file]) => file);
+
 		return this._multiple ? files : files.pop();
 	}
 

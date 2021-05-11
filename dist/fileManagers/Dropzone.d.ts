@@ -4,7 +4,7 @@ export interface OptionDropzone {
     accept: FileAccept;
     count: FileCount;
     string: {
-        buttonUplaod: string;
+        buttonUpload: string;
         dropzoneDrag: string;
         dropzoneDrop: string;
     };
@@ -13,8 +13,8 @@ interface OptionDropzoneFileManager extends OptionDefaultFileManager {
     accept: FileAccept;
     count: FileCount;
     string: {
-        emptyUplaod: string;
-        filledUplaod: string;
+        emptyUpload: string;
+        filledUpload: string;
         dropzoneDrag: string;
         dropzoneDrop: string;
     };
@@ -24,8 +24,8 @@ export declare class Dropzone extends FileManagerBase {
         accept: string;
         count: number;
         string: {
-            emptyUplaod: string;
-            filledUplaod: string;
+            emptyUpload: string;
+            filledUpload: string;
             dropzoneDrag: string;
             dropzoneDrop: string;
         };
@@ -36,20 +36,10 @@ export declare class Dropzone extends FileManagerBase {
     protected state: {
         textDropZone: string;
     };
-    protected get css(): {
-        container: string;
-        wrapper: string;
-        dragZone: string;
-        control: string;
-        button: string;
-        input: string;
-        hide: string;
-        activeDragzone: string;
-        dropDragzone: string;
-    };
+    protected get css(): Record<string, string>;
     constructor($el: HTMLElement, uploaderApi: UploaderPrivateApi, option?: Partial<OptionDropzoneFileManager>);
     private listener;
-    protected onSeleced(files: File[]): void;
+    protected onSelected(files: File[]): void;
     private render;
     get api(): {
         status(value: 'empty' | 'filled'): void;
@@ -68,7 +58,7 @@ export declare class Dropzone extends FileManagerBase {
     private dragLeaveHandler;
     private dropHandler;
     private pasteHandler;
-    private toogleDropzone;
-    private toogleDropDropzone;
+    private toggleDropzone;
+    private toggleDropDropzone;
 }
 export {};
